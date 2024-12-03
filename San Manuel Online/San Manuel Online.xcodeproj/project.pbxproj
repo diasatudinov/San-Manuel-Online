@@ -10,22 +10,9 @@
 		2B457C022CFE099500722844 /* San Manuel Online.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "San Manuel Online.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		2B457C142CFE09C700722844 /* Exceptions for "San Manuel Online" folder in "San Manuel Online" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"San-Manuel-Online-Info.plist",
-			);
-			target = 2B457C012CFE099500722844 /* San Manuel Online */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2B457C042CFE099500722844 /* San Manuel Online */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				2B457C142CFE09C700722844 /* Exceptions for "San Manuel Online" folder in "San Manuel Online" target */,
-			);
 			path = "San Manuel Online";
 			sourceTree = "<group>";
 		};
