@@ -11,7 +11,7 @@ import SwiftUI
 struct San_Manuel_OnlineApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MenuView()
         }
     }
 }
