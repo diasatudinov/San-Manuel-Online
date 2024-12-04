@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct Amulet: Hashable, Equatable, Codable {
+    var id = UUID()
+    var imageName: String
+    var color: String
+}
