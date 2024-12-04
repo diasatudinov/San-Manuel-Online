@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "amuletAI.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
