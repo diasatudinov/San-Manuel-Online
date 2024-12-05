@@ -38,6 +38,7 @@ struct GameView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(height: 35)
+                                        .background(viewModel.cells[index]?.owner == .ai ? Color.black : Color.clear)
                                         
                                 }
                                 
@@ -121,6 +122,8 @@ struct GameView: View {
                     }.padding()
                     Spacer()
                 }
+            
+            
             } else {
                 VStack {
                     if viewModel.winner?.lowercased() == "player" {
@@ -208,7 +211,7 @@ struct GameView: View {
         }
         
         // Player places their amulet
-        viewModel.placeAmulet(amulet: selectedAmulet, at: index, owner: .player)
+        viewModel.placeAmulet(amulet: selectedAmulet, at: index)
         switch selectedAmulet.color {
         case "red": viewModel.updateUserScore(points: 2)
         case "orange": viewModel.updateUserScore(points: 4)

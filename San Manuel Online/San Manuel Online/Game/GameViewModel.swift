@@ -58,14 +58,14 @@ class GameViewModel: ObservableObject {
     func updateUserScore(points: Int) {
         userScore += points
     }
-    func placeAmulet(amulet: Amulet, at index: Int, owner: OwnerType) {
+    func placeAmulet(amulet: Amulet, at index: Int) {
         cells[index] = amulet // Place amulet in the grid cell
         
         // Replace the amulet in the inventory
-        if let inventoryIndex = inventory.firstIndex(of: amulet) {
+        if let inventoryIndex = inventory.firstIndex(where: { $0.id == amulet.id }) {
             let randomAmulet = amulets.randomElement()!
             
-            let amulet = Amulet(imageName: randomAmulet.imageName, color: randomAmulet.color, owner: owner)
+            let amulet = Amulet(imageName: randomAmulet.imageName, color: randomAmulet.color)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.inventory[inventoryIndex] = amulet
             }
@@ -93,8 +93,9 @@ class GameViewModel: ObservableObject {
                 
         
         // Place the AI amulet in the selected cell
-        if let randomAmulet = inventory.randomElement() {
-            placeAmulet(amulet: randomAmulet, at: randomCell, owner: .ai)
+        if var randomAmulet = inventory.randomElement() {
+            randomAmulet.owner = .ai
+            placeAmulet(amulet: randomAmulet, at: randomCell)
             switch randomAmulet.color {
             case "red": aiScore += 2
             case "orange": aiScore += 4
@@ -131,7 +132,7 @@ class GameViewModel: ObservableObject {
         
         
     }
-    
+
     func checkForWin(from index: Int) -> Bool {
         let gridSize = 6 // Размер сетки
         let row = index / gridSize // Номер строки
@@ -139,9 +140,10 @@ class GameViewModel: ObservableObject {
 
         // Функция для проверки направления
         func checkDirection(deltaRow: Int, deltaCol: Int) -> Bool {
-            var colors: [String] = []
+            var amulets: [Amulet] = [] // Массив для хранения амулетов в направлении
 
-            for step in -3...3 { // Проверяем клетки в пределах 3 шагов в обе стороны
+            // Проверяем клетки в пределах 3 шагов в обе стороны
+            for step in -3...3 {
                 let newRow = row + step * deltaRow
                 let newCol = col + step * deltaCol
                 let newIndex = newRow * gridSize + newCol
@@ -149,23 +151,24 @@ class GameViewModel: ObservableObject {
                 // Убедимся, что координаты в пределах сетки
                 if newRow >= 0, newRow < gridSize, newCol >= 0, newCol < gridSize {
                     if let amulet = cells[newIndex] {
-                        colors.append(amulet.color)
+                        amulets.append(amulet)
                     } else {
-                        colors.append("") // Пустая клетка
+                        amulets.append(Amulet(imageName: "", color: "", owner: .player)) // Пустая клетка
                     }
                 }
             }
 
-            // Ищем 4 подряд одинаковых цвета
+            // Ищем 4 подряд одинаковых цвета и владельца
             var consecutiveCount = 0
-            var lastColor = ""
-            for color in colors {
-                if color == lastColor && color != "" {
+            var lastAmulet: Amulet? = nil
+
+            for amulet in amulets {
+                if let last = lastAmulet, last.color == amulet.color && last.owner == amulet.owner {
                     consecutiveCount += 1
                     if consecutiveCount == 4 { return true } // Найдено совпадение
                 } else {
                     consecutiveCount = 1
-                    lastColor = color
+                    lastAmulet = amulet
                 }
             }
             return false
@@ -177,4 +180,52 @@ class GameViewModel: ObservableObject {
                checkDirection(deltaRow: 1, deltaCol: 1) ||  // Диагональ вниз-вправо
                checkDirection(deltaRow: 1, deltaCol: -1)    // Диагональ вниз-влево
     }
+    
+    //Correct One
+    
+//    func checkForWin(from index: Int) -> Bool {
+//        let gridSize = 6 // Размер сетки
+//        let row = index / gridSize // Номер строки
+//        let col = index % gridSize // Номер столбца
+//
+//        // Функция для проверки направления
+//        func checkDirection(deltaRow: Int, deltaCol: Int) -> Bool {
+//            var colors: [String] = []
+//
+//            for step in -3...3 { // Проверяем клетки в пределах 3 шагов в обе стороны
+//                let newRow = row + step * deltaRow
+//                let newCol = col + step * deltaCol
+//                let newIndex = newRow * gridSize + newCol
+//
+//                // Убедимся, что координаты в пределах сетки
+//                if newRow >= 0, newRow < gridSize, newCol >= 0, newCol < gridSize {
+//                    if let amulet = cells[newIndex] {
+//                        colors.append(amulet.color)
+//                    } else {
+//                        colors.append("") // Пустая клетка
+//                    }
+//                }
+//            }
+//
+//            // Ищем 4 подряд одинаковых цвета
+//            var consecutiveCount = 0
+//            var lastColor = ""
+//            for color in colors {
+//                if color == lastColor && color != "" {
+//                    consecutiveCount += 1
+//                    if consecutiveCount == 4 { return true } // Найдено совпадение
+//                } else {
+//                    consecutiveCount = 1
+//                    lastColor = color
+//                }
+//            }
+//            return false
+//        }
+//
+//        // Проверяем все направления
+//        return checkDirection(deltaRow: 0, deltaCol: 1) ||  // Горизонталь
+//               checkDirection(deltaRow: 1, deltaCol: 0) ||  // Вертикаль
+//               checkDirection(deltaRow: 1, deltaCol: 1) ||  // Диагональ вниз-вправо
+//               checkDirection(deltaRow: 1, deltaCol: -1)    // Диагональ вниз-влево
+//    }
 }

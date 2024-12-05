@@ -230,7 +230,7 @@ struct MenuView: View {
 //                }
 //            }
             .fullScreenCover(isPresented: $showPlay) {
-                SettingsView(settings: settingsVM)
+                GameView(viewModel: GameViewModel())
             }
             .fullScreenCover(isPresented: $showTraining) {
                 SettingsView(settings: settingsVM)
