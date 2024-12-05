@@ -13,79 +13,174 @@ struct GameView: View {
     @ObservedObject var viewModel: GameViewModel
     @State var selectedAmulet: Amulet?
     @State var selectedCell: Int?
+    
+    @State var playerTurn = true
     private let gridSize = 6
     var body: some View {
         ZStack {
-            VStack {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: gridSize), spacing: 8) {
-                    ForEach(Range(0...35)) { index in
-                        ZStack {
-                            Image(.cellBg)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 45)
-                                .onTapGesture {
-                                    handleCellTap(at: index)
+            if viewModel.gameOn {
+                VStack {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: gridSize), spacing: 8) {
+                        ForEach(Range(0...35)) { index in
+                            ZStack {
+                                Image(.cellBg)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 45)
+                                    .onTapGesture {
+                                        if playerTurn {
+                                            handleCellTap(at: index)
+                                        }
+                                    }
+                                
+                                if let amulet = viewModel.cells[index] {
+                                    Image(amulet.imageName)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 35)
+                                        
                                 }
-                            
-                            if let amulet = viewModel.cells[index] {
+                                
+                            }
+                        }
+                        
+                    }.frame(width: 350)
+                    
+                    Spacer()
+                    HStack {
+                        ForEach(viewModel.inventory, id: \.self) { amulet in
+                            if let index = viewModel.cells.firstIndex(where: { $0?.id == amulet.id }) {
+                            } else {
                                 Image(amulet.imageName)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: 35)
+                                    .frame(height: 90)
+                                    .padding(.bottom, -60)
+                                    .offset(y: selectedAmulet == amulet ? -10 : 0) // Highlight selected amulet
+                                    .onTapGesture {
+                                        toggleAmuletSelection(amulet: amulet)
+                                    }
+                            }
+                        }
+                    }
+                }.padding(.top, 20)
+                
+                VStack {
+                    HStack {
+                        VStack {
+                            Button {
+                                presentationMode.wrappedValue.dismiss()
+                            } label: {
+                                ZStack {
+                                    Image(.backBtn)
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    
+                                    
+                                }.frame(height: 65)
+                                
+                            }
+                            Spacer()
+                        }
+                        Spacer()
+                        
+                        VStack {
+                            
+                            TextWithBorder(text: "User score", font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                .textCase(.uppercase)
+                            ZStack {
+                                Image(.coinBg)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 45)
+                                HStack(spacing: 0) {
+                                   
+                                    
+                                    TextWithBorder(text: "\(viewModel.userScore)", font: .custom(Fonts.mazzardM.rawValue, size: 25), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                        .textCase(.uppercase)
+                                }
                             }
                             
+                            TextWithBorder(text: "AI score", font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                .textCase(.uppercase)
+                            ZStack {
+                                Image(.coinBg)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 45)
+                                HStack(spacing: 0) {
+                                   
+                                    
+                                    TextWithBorder(text: "\(viewModel.aiScore)", font: .custom(Fonts.mazzardM.rawValue, size: 25), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                        .textCase(.uppercase)
+                                }
+                            }
+                            Spacer()
                         }
-                    }
-                    
-                }.frame(width: 350)
-                
-                Spacer()
-                HStack {
-                    ForEach(viewModel.inventory, id: \.self) { amulet in
-                        if let index = viewModel.cells.firstIndex(where: { $0?.id == amulet.id }) {
-                        } else {
-                            Image(amulet.imageName)
+                    }.padding()
+                    Spacer()
+                }
+            } else {
+                VStack {
+                    if viewModel.winner?.lowercased() == "player" {
+                        TextWithBorder(text: "WIN!", font: .custom(Fonts.mazzardM.rawValue, size: 50), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                            .textCase(.uppercase)
+                        
+                        ZStack {
+                            Image(.coinBg)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: 90)
-                                .padding(.bottom, -60)
-                                .offset(y: selectedAmulet == amulet ? -10 : 0) // Highlight selected amulet
-                                .onTapGesture {
-                                    toggleAmuletSelection(amulet: amulet)
-                                }
+                                .frame(height: 45)
+                            HStack(spacing: 0) {
+                                
+                                Image(.coin)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 30)
+                                
+                                TextWithBorder(text: "+55 ", font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                    .textCase(.uppercase)
+                            }
+                        }.padding(.bottom)
+                        
+                        Button {
+                            restart()
+                        }label: {
+                            TextBg(height: 55, text: "NEXT", textSize: 22)
                         }
+                        
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        }label: {
+                            TextBg(type: .black, height: 55, text: "HOME", textSize: 22)
+                        }
+                        
+                        Button {
+                            restart()
+                        }label: {
+                            TextBg(type: .black, height: 55, text: "RESTART", textSize: 22)
+                        }
+                    } else {
+                        TextWithBorder(text: "LOSE!", font: .custom(Fonts.mazzardM.rawValue, size: 50), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                            .textCase(.uppercase)
+                        
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        }label: {
+                            TextBg(type: .black, height: 55, text: "HOME", textSize: 22)
+                        }
+                        
+                        Button {
+                            restart()
+                        }label: {
+                            TextBg(type: .black, height: 55, text: "RESTART", textSize: 22)
+                        }
+                    }
+                    HStack {
+                        Spacer()
                     }
                 }
-            }.padding(.top, 20)
-            
-            VStack {
-                HStack {
-                    Button {
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        ZStack {
-                            Image(.backBtn)
-                                .resizable()
-                                .scaledToFit()
-                            
-                            
-                            
-                        }.frame(height: 65)
-                        
-                    }
-                    Spacer()
-                    
-                    VStack {
-                        Text("USER SCORE: \(viewModel.userScore)")
-                        Text("AI SCORE: \(viewModel.aiScore)")
-                        
-                        if let winner = viewModel.winner {
-                            Text(winner)
-                        }
-                    }
-                }.padding()
-                Spacer()
             }
             
         }.background(
@@ -113,7 +208,7 @@ struct GameView: View {
         }
         
         // Player places their amulet
-        viewModel.placeAmulet(amulet: selectedAmulet, at: index)
+        viewModel.placeAmulet(amulet: selectedAmulet, at: index, owner: .player)
         switch selectedAmulet.color {
         case "red": viewModel.updateUserScore(points: 2)
         case "orange": viewModel.updateUserScore(points: 4)
@@ -125,12 +220,29 @@ struct GameView: View {
         default:
             viewModel.updateUserScore(points: 2)
         }
-        self.selectedAmulet = nil // Clear selection
-        
+         // Clear selection
+        self.selectedAmulet = nil
+        playerTurn = false
+        print(viewModel.cells)
         // Trigger AI's move
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            //viewModel.aiMove()
+            
+            viewModel.aiMove()
+            viewModel.checkGameEnd()
+            playerTurn = true
+            
         }
+        
+       
+    }
+    
+    private func restart() {
+        viewModel.winner = nil
+        viewModel.cells = Array(repeating: nil, count: 36)
+        viewModel.gameOn = true
+        viewModel.userScore = 0
+        viewModel.aiScore = 0
+        
     }
 }
 

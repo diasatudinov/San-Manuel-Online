@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum OwnerType: Codable {
+    case player
+    case ai
+}
+
 class GameViewModel: ObservableObject {
     
     var amulets: [Amulet] = [
@@ -35,6 +40,7 @@ class GameViewModel: ObservableObject {
     @Published var aiScore: Int = 0
     
     @Published var winner: String?
+    @Published var gameOn = true
     
     init() {
         fillInventory()
@@ -52,18 +58,29 @@ class GameViewModel: ObservableObject {
     func updateUserScore(points: Int) {
         userScore += points
     }
-    func placeAmulet(amulet: Amulet, at index: Int) {
+    func placeAmulet(amulet: Amulet, at index: Int, owner: OwnerType) {
         cells[index] = amulet // Place amulet in the grid cell
         
         // Replace the amulet in the inventory
         if let inventoryIndex = inventory.firstIndex(of: amulet) {
-            let amulet = Amulet(imageName: amulets.randomElement()!.imageName, color: amulets.randomElement()!.color)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            let randomAmulet = amulets.randomElement()!
+            
+            let amulet = Amulet(imageName: randomAmulet.imageName, color: randomAmulet.color, owner: owner)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.inventory[inventoryIndex] = amulet
             }
         }
         
-        checkWinCondition()
+        
+        if checkForWin(from: index) {
+            gameOn = false
+            winner = "PLAYER"
+            User.shared.updateUserCoins(for: 55)
+        }
+        print(checkForWin(from: index))
+        
+        checkGameEnd()
+        
     }
     
     func aiMove() {
@@ -77,7 +94,7 @@ class GameViewModel: ObservableObject {
         
         // Place the AI amulet in the selected cell
         if let randomAmulet = inventory.randomElement() {
-            placeAmulet(amulet: randomAmulet, at: randomCell)
+            placeAmulet(amulet: randomAmulet, at: randomCell, owner: .ai)
             switch randomAmulet.color {
             case "red": aiScore += 2
             case "orange": aiScore += 4
@@ -92,48 +109,72 @@ class GameViewModel: ObservableObject {
         }
     }
     
-    private func checkWinCondition() {
-        let directions = [
-            (dx: 1, dy: 0),   // Horizontal
-            (dx: 0, dy: 1),   // Vertical
-            (dx: 1, dy: 1),   // Diagonal \
-            (dx: 1, dy: -1)   // Diagonal /
-        ]
+    func checkGameEnd() {
+        guard winner == nil else { return }
+        if userScore >= 100 {
+            gameOn = false
+            winner = "PLAYER"
+            User.shared.updateUserCoins(for: 55)
+        }
         
-        let gridSize = 6 // Size of the grid
+        if aiScore >= 100 {
+            gameOn = false
+            winner = "AI"
+        }
         
-        for y in 0..<gridSize {
-            for x in 0..<gridSize {
-                guard let currentAmulet = cells[y * gridSize + x] else { continue }
-                
-                for direction in directions {
-                    if isWinningLine(startX: x, startY: y, dx: direction.dx, dy: direction.dy, color: currentAmulet.color, gridSize: gridSize) {
-                        winner = currentAmulet.color // Set the winner as the amulet's color
-                        return
+        let emptyCells = cells.enumerated().filter { $0.element == nil }.map { $0.offset }
+        
+        if emptyCells.isEmpty {
+            gameOn = false
+            winner = "AI"
+        }
+        
+        
+    }
+    
+    func checkForWin(from index: Int) -> Bool {
+        let gridSize = 6 // Размер сетки
+        let row = index / gridSize // Номер строки
+        let col = index % gridSize // Номер столбца
+
+        // Функция для проверки направления
+        func checkDirection(deltaRow: Int, deltaCol: Int) -> Bool {
+            var colors: [String] = []
+
+            for step in -3...3 { // Проверяем клетки в пределах 3 шагов в обе стороны
+                let newRow = row + step * deltaRow
+                let newCol = col + step * deltaCol
+                let newIndex = newRow * gridSize + newCol
+
+                // Убедимся, что координаты в пределах сетки
+                if newRow >= 0, newRow < gridSize, newCol >= 0, newCol < gridSize {
+                    if let amulet = cells[newIndex] {
+                        colors.append(amulet.color)
+                    } else {
+                        colors.append("") // Пустая клетка
                     }
                 }
             }
-        }
-    }
-    
-    private func isWinningLine(startX: Int, startY: Int, dx: Int, dy: Int, color: String, gridSize: Int) -> Bool {
-        var count = 0
-        
-        for i in 0..<5 { // Check up to 4 cells in the given direction
-            let newX = startX + i * dx
-            let newY = startY + i * dy
-            
-            if newX < 0 || newY < 0 || newX >= gridSize || newY >= gridSize {
-                return false // Out of bounds
+
+            // Ищем 4 подряд одинаковых цвета
+            var consecutiveCount = 0
+            var lastColor = ""
+            for color in colors {
+                if color == lastColor && color != "" {
+                    consecutiveCount += 1
+                    if consecutiveCount == 4 { return true } // Найдено совпадение
+                } else {
+                    consecutiveCount = 1
+                    lastColor = color
+                }
             }
-            
-            if cells[newY * gridSize + newX]?.color == color {
-                count += 1
-            } else {
-                break
-            }
+            return false
         }
-        
-        return count == 4
+
+        // Проверяем все направления
+        return checkDirection(deltaRow: 0, deltaCol: 1) ||  // Горизонталь
+               checkDirection(deltaRow: 1, deltaCol: 0) ||  // Вертикаль
+               checkDirection(deltaRow: 1, deltaCol: 1) ||  // Диагональ вниз-вправо
+               checkDirection(deltaRow: 1, deltaCol: -1)    // Диагональ вниз-влево
     }
 }
