@@ -18,7 +18,7 @@ struct TrainingView: View {
     private let gridSize = 4
     var body: some View {
         ZStack {
-            if userScore < 100 {
+            if userScore <= 100 {
                 VStack {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: gridSize), spacing: 8) {
                         ForEach(Range(0...15)) { index in
@@ -177,6 +177,11 @@ struct TrainingView: View {
         
         // Player places their amulet
         viewModel.placeAmulet(amulet: selectedAmulet, at: index)
+        
+        if viewModel.checkForWin(from: index) {
+            userScore = 101
+        }
+        
         switch selectedAmulet.color {
         case "red": userScore += 2
         case "orange": userScore += 4
