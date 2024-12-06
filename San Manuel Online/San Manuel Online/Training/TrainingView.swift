@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import AVFoundation
+
 
 struct TrainingView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    
+    @State private var audioPlayer: AVAudioPlayer?
+    @ObservedObject var settingsVM: SettingsModel
     @ObservedObject var viewModel: TrainingViewModel
     @State var selectedAmulet: Amulet?
     @State var selectedCell: Int?
@@ -196,7 +199,10 @@ struct TrainingView: View {
         }
         // Clear selection
         self.selectedAmulet = nil
-        
+        if settingsVM.soundEnabled {
+            playSound(named: "takeStar")
+            
+        }
         
     }
     func fetchScenario() {
@@ -209,8 +215,19 @@ struct TrainingView: View {
         fetchScenario()
         viewModel.fillInventory()
     }
+    
+    func playSound(named soundName: String) {
+        if let url = Bundle.main.url(forResource: soundName, withExtension: "mp3") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 #Preview {
-    TrainingView(viewModel: TrainingViewModel())
+    TrainingView(settingsVM: SettingsModel(), viewModel: TrainingViewModel())
 }
