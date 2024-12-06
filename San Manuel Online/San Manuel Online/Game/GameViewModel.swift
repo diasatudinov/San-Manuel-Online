@@ -77,7 +77,6 @@ class GameViewModel: ObservableObject {
             winner = "PLAYER"
             User.shared.updateUserCoins(for: 55)
         }
-        print(checkForWin(from: index))
         
         checkGameEnd()
         

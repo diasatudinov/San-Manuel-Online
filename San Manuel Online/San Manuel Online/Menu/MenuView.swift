@@ -18,9 +18,9 @@ struct MenuView: View {
     
     @StateObject var user = User.shared
     @StateObject var achievementsVM = AchievementsViewModel()
-    //    @StateObject var leaderboardVM = LeaderboardViewModel()
-      @StateObject var settingsVM = SettingsModel()
-//    @StateObject var collectionVM = CollectionViewModel()
+    @StateObject var gameVM = GameViewModel()
+    @StateObject var settingsVM = SettingsModel()
+        @StateObject var trainingVM = TrainingViewModel()
     
     
     @State private var timeRemaining: String = "24:00"
@@ -51,8 +51,8 @@ struct MenuView: View {
                                         
                                         TextWithBorder(text: "\(user.coins) ", font: .custom(Fonts.mazzardM.rawValue, size: 25), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                             .textCase(.uppercase)
-                                       
-                                            
+                                        
+                                        
                                     }
                                 }
                                 
@@ -93,10 +93,10 @@ struct MenuView: View {
                                 } label: {
                                     
                                     ZStack {
-                                    TextBg(height: 75, text: "Daily Bonus", textSize: 35)
+                                        TextBg(height: 75, text: "Daily Bonus", textSize: 35)
                                         TextWithBorder(text: "\(timeRemaining)", font: .custom(Fonts.mazzardM.rawValue, size: 16), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 1)
                                             .offset(x: 95, y: -15)
-                                            
+                                        
                                     }
                                 }
                                 
@@ -130,8 +130,8 @@ struct MenuView: View {
                                         
                                         TextWithBorder(text: "\(user.coins) ", font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                             .textCase(.uppercase)
-                                       
-                                            
+                                        
+                                        
                                     }
                                 }
                                 Spacer()
@@ -182,7 +182,7 @@ struct MenuView: View {
                                             TextBg(height: 65, text: "Daily Bonus", textSize: 27)
                                             TextWithBorder(text: "\(timeRemaining)", font: .custom(Fonts.mazzardM.rawValue, size: 16), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 1)
                                                 .offset(x: 75, y: -15)
-                                                
+                                            
                                         }
                                     }
                                     Spacer()
@@ -217,23 +217,23 @@ struct MenuView: View {
             .onReceive(timer) { _ in
                 updateTimer()
             }
-//            .onAppear {
-//                if settingsVM.musicEnabled {
-//                    MusicPlayer.shared.playBackgroundMusic()
-//                }
-//            }
-//            .onChange(of: settingsVM.musicEnabled) { enabled in
-//                if enabled {
-//                    MusicPlayer.shared.playBackgroundMusic()
-//                } else {
-//                    MusicPlayer.shared.stopBackgroundMusic()
-//                }
-//            }
+            //            .onAppear {
+            //                if settingsVM.musicEnabled {
+            //                    MusicPlayer.shared.playBackgroundMusic()
+            //                }
+            //            }
+            //            .onChange(of: settingsVM.musicEnabled) { enabled in
+            //                if enabled {
+            //                    MusicPlayer.shared.playBackgroundMusic()
+            //                } else {
+            //                    MusicPlayer.shared.stopBackgroundMusic()
+            //                }
+            //            }
             .fullScreenCover(isPresented: $showPlay) {
-                GameView(viewModel: GameViewModel())
+                GameView(viewModel: gameVM)
             }
             .fullScreenCover(isPresented: $showTraining) {
-                SettingsView(settings: settingsVM)
+                TrainingView(viewModel: trainingVM)
             }
             .fullScreenCover(isPresented: $showSettings) {
                 SettingsView(settings: settingsVM)

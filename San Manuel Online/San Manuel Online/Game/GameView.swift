@@ -9,13 +9,13 @@ import SwiftUI
 
 struct GameView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var cards: [String] = []
     @ObservedObject var viewModel: GameViewModel
     @State var selectedAmulet: Amulet?
     @State var selectedCell: Int?
     
     @State var playerTurn = true
     private let gridSize = 6
+    
     var body: some View {
         ZStack {
             if viewModel.gameOn {
@@ -57,7 +57,7 @@ struct GameView: View {
                                     .scaledToFit()
                                     .frame(height: 90)
                                     .padding(.bottom, -60)
-                                    .offset(y: selectedAmulet == amulet ? -10 : 0) // Highlight selected amulet
+                                    .offset(y: selectedAmulet == amulet ? -10 : 0)
                                     .onTapGesture {
                                         toggleAmuletSelection(amulet: amulet)
                                     }
@@ -207,7 +207,7 @@ struct GameView: View {
     // Handle placing an amulet in a cell
     private func handleCellTap(at index: Int) {
         guard let selectedAmulet = selectedAmulet, viewModel.cells[index] == nil else {
-            return // Do nothing if no amulet selected or cell is occupied
+            return
         }
         
         // Player places their amulet
@@ -226,7 +226,7 @@ struct GameView: View {
          // Clear selection
         self.selectedAmulet = nil
         playerTurn = false
-        print(viewModel.cells)
+        
         // Trigger AI's move
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             
