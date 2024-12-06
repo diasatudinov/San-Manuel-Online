@@ -42,12 +42,14 @@ class GameViewModel: ObservableObject {
     @Published var winner: String?
     @Published var gameOn = true
     
+    @Published var playerLose = false
+    @Published var winsCount = 0
     init() {
         fillInventory()
     }
     
     func fillInventory() {
-        
+        inventory = []
         for amulet in amulets.shuffled() {
             let amulet = Amulet(imageName: amulet.imageName, color: amulet.color)
             inventory.append(amulet)
@@ -76,6 +78,7 @@ class GameViewModel: ObservableObject {
             gameOn = false
             winner = "PLAYER"
             User.shared.updateUserCoins(for: 55)
+            playerLose = false
         }
         
         checkGameEnd()
@@ -115,11 +118,13 @@ class GameViewModel: ObservableObject {
             gameOn = false
             winner = "PLAYER"
             User.shared.updateUserCoins(for: 55)
+            playerLose = false
         }
         
         if aiScore >= 100 {
             gameOn = false
             winner = "AI"
+            playerLose = true
         }
         
         let emptyCells = cells.enumerated().filter { $0.element == nil }.map { $0.offset }
@@ -127,8 +132,8 @@ class GameViewModel: ObservableObject {
         if emptyCells.isEmpty {
             gameOn = false
             winner = "AI"
+            playerLose = true
         }
-        
         
     }
 

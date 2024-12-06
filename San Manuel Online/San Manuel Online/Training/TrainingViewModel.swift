@@ -125,7 +125,7 @@ class TrainingViewModel: ObservableObject  {
     }
     
     func fillInventory() {
-        
+        inventory = []
         for amulet in amulets.shuffled() {
             let amulet = Amulet(imageName: amulet.imageName, color: amulet.color)
             inventory.append(amulet)

@@ -211,6 +211,11 @@ struct MenuView: View {
                     .scaledToFill()
                 
             )
+            .onChange(of: user.storedCoins) { newValue in
+                if newValue > 499 {
+                    achievementsVM.achievementOneDone()
+                }
+            }
             .onAppear {
                 updateTimer()
             }
@@ -230,7 +235,7 @@ struct MenuView: View {
             //                }
             //            }
             .fullScreenCover(isPresented: $showPlay) {
-                GameView(viewModel: gameVM)
+                GameView(viewModel: gameVM, achievementsVM: achievementsVM)
             }
             .fullScreenCover(isPresented: $showTraining) {
                 TrainingView(viewModel: trainingVM)

@@ -10,11 +10,16 @@ import SwiftUI
 struct GameView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: GameViewModel
+    @ObservedObject var achievementsVM: AchievementsViewModel
+    
     @State var selectedAmulet: Amulet?
     @State var selectedCell: Int?
     
     @State var playerTurn = true
     private let gridSize = 6
+    
+    
+    @AppStorage("redAmuletCount") var redAmuletCount = 0
     
     var body: some View {
         ZStack {
@@ -193,6 +198,21 @@ struct GameView: View {
                 .scaledToFill()
             
         )
+        .onChange(of: redAmuletCount) { newValue in
+            if newValue > 49 { // 50
+                achievementsVM.achievementTwoDone()
+            }
+            
+        }
+        .onChange(of: viewModel.winsCount) { newValue in
+            if newValue > 9 {
+                achievementsVM.achievementThreeDone()
+            }
+        }
+        .onAppear {
+            restart()
+                
+        }
     }
     
     // Toggle selection of an amulet
@@ -214,6 +234,9 @@ struct GameView: View {
         viewModel.placeAmulet(amulet: selectedAmulet, at: index)
         switch selectedAmulet.color {
         case "red": viewModel.updateUserScore(points: 2)
+            if redAmuletCount < 52 {
+                redAmuletCount += 1
+            }
         case "orange": viewModel.updateUserScore(points: 4)
         case "green": viewModel.updateUserScore(points: 6)
         case "yellow": viewModel.updateUserScore(points: 8)
@@ -240,15 +263,24 @@ struct GameView: View {
     }
     
     private func restart() {
+        
+        if viewModel.winner?.lowercased() == "player" {
+            if !viewModel.playerLose {
+                viewModel.winsCount += 1
+                print("WON")
+            }
+        }
         viewModel.winner = nil
         viewModel.cells = Array(repeating: nil, count: 36)
         viewModel.gameOn = true
         viewModel.userScore = 0
         viewModel.aiScore = 0
+        viewModel.fillInventory()
+        
         
     }
 }
 
 #Preview {
-    GameView(viewModel: GameViewModel())
+    GameView(viewModel: GameViewModel(), achievementsVM: AchievementsViewModel())
 }

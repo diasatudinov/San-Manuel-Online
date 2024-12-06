@@ -150,7 +150,7 @@ struct TrainingView: View {
             
         }
         .onAppear {
-            fetchScenario()
+            restart()
         }
         .background(
             Image(.background)
@@ -180,6 +180,7 @@ struct TrainingView: View {
         
         if viewModel.checkForWin(from: index) {
             userScore = 101
+            User.shared.updateUserCoins(for: 1)
         }
         
         switch selectedAmulet.color {
@@ -206,6 +207,7 @@ struct TrainingView: View {
     
     private func restart() {
         fetchScenario()
+        viewModel.fillInventory()
     }
 }
 
