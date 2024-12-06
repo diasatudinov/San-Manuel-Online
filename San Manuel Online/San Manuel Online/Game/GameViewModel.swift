@@ -68,7 +68,7 @@ class GameViewModel: ObservableObject {
             let randomAmulet = amulets.randomElement()!
             
             let amulet = Amulet(imageName: randomAmulet.imageName, color: randomAmulet.color)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.inventory[inventoryIndex] = amulet
             }
         }

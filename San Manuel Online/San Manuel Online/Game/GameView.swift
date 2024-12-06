@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import AVFoundation
+
 
 struct GameView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: GameViewModel
     @ObservedObject var achievementsVM: AchievementsViewModel
-    
+    @State private var audioPlayer: AVAudioPlayer?
+    @ObservedObject var settingsVM: SettingsModel
+
     @State var selectedAmulet: Amulet?
     @State var selectedCell: Int?
     
@@ -249,14 +253,20 @@ struct GameView: View {
          // Clear selection
         self.selectedAmulet = nil
         playerTurn = false
-        
+        if settingsVM.soundEnabled {
+            playSound(named: "takeStar")
+            
+        }
         // Trigger AI's move
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             
             viewModel.aiMove()
             viewModel.checkGameEnd()
             playerTurn = true
-            
+            if settingsVM.soundEnabled {
+                playSound(named: "takeStar")
+                
+            }
         }
         
        
@@ -279,8 +289,19 @@ struct GameView: View {
         
         
     }
+    
+    func playSound(named soundName: String) {
+        if let url = Bundle.main.url(forResource: soundName, withExtension: "mp3") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 #Preview {
-    GameView(viewModel: GameViewModel(), achievementsVM: AchievementsViewModel())
+    GameView(viewModel: GameViewModel(), achievementsVM: AchievementsViewModel(), settingsVM: SettingsModel())
 }
