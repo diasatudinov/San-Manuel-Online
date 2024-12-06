@@ -18,6 +18,15 @@ struct SplashScreen: View {
                 Spacer()
                 TextWithBorder(text: "LOADING...", font: .custom(Fonts.mazzardM.rawValue, size: 60), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                     .frame(maxWidth: .infinity)
+                    .scaleEffect(scale)
+                    .animation(
+                        Animation.easeInOut(duration: 0.8)
+                            .repeatForever(autoreverses: true),
+                        value: scale
+                    )
+                    .onAppear {
+                        scale = 0.8
+                    }
                 Spacer()
             }
         }.background(

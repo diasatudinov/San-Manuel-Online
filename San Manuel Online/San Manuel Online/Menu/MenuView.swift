@@ -222,23 +222,23 @@ struct MenuView: View {
             .onReceive(timer) { _ in
                 updateTimer()
             }
-            //            .onAppear {
-            //                if settingsVM.musicEnabled {
-            //                    MusicPlayer.shared.playBackgroundMusic()
-            //                }
-            //            }
-            //            .onChange(of: settingsVM.musicEnabled) { enabled in
-            //                if enabled {
-            //                    MusicPlayer.shared.playBackgroundMusic()
-            //                } else {
-            //                    MusicPlayer.shared.stopBackgroundMusic()
-            //                }
-            //            }
+            .onAppear {
+                if settingsVM.musicEnabled {
+                    MusicPlayer.shared.playBackgroundMusic()
+                }
+            }
+            .onChange(of: settingsVM.musicEnabled) { enabled in
+                if enabled {
+                    MusicPlayer.shared.playBackgroundMusic()
+                } else {
+                    MusicPlayer.shared.stopBackgroundMusic()
+                }
+            }
             .fullScreenCover(isPresented: $showPlay) {
-                GameView(viewModel: gameVM, achievementsVM: achievementsVM)
+                GameView(viewModel: gameVM, achievementsVM: achievementsVM, settingsVM: settingsVM)
             }
             .fullScreenCover(isPresented: $showTraining) {
-                TrainingView(viewModel: trainingVM)
+                TrainingView(settingsVM: settingsVM, viewModel: trainingVM)
             }
             .fullScreenCover(isPresented: $showSettings) {
                 SettingsView(settings: settingsVM)
