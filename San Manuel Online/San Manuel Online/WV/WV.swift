@@ -62,8 +62,9 @@ struct WVWrap: View {
                         .onAppear {
                             print("encodedString")
                             print("firstOpen", firstOpen)
-                            
-                            
+                            if Links.shared.finalURL == nil {
+                                Links.shared.finalURL = url
+                            }
                         }
                         .onDisappear {
                             
