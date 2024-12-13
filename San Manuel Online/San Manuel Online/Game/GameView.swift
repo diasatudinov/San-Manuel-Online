@@ -35,7 +35,7 @@ struct GameView: View {
                                 Image(.cellBg)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: 45)
+                                    .frame(height: DeviceInfo.shared.deviceType == .pad ? 90:45)
                                     .onTapGesture {
                                         if playerTurn {
                                             handleCellTap(at: index)
@@ -46,7 +46,7 @@ struct GameView: View {
                                     Image(amulet.imageName)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 35)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 70:35)
                                         .background(viewModel.cells[index]?.owner == .ai ? Color.black : Color.clear)
                                         
                                 }
@@ -54,7 +54,7 @@ struct GameView: View {
                             }
                         }
                         
-                    }.frame(width: 350)
+                    }.frame(width: DeviceInfo.shared.deviceType == .pad ? 600:350)
                     
                     Spacer()
                     HStack {
@@ -64,8 +64,8 @@ struct GameView: View {
                                 Image(amulet.imageName)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: 90)
-                                    .padding(.bottom, -60)
+                                    .frame(height: DeviceInfo.shared.deviceType == .pad ? 160:90)
+                                    .padding(.bottom, DeviceInfo.shared.deviceType == .pad ? -90:-60)
                                     .offset(y: selectedAmulet == amulet ? -10 : 0)
                                     .onTapGesture {
                                         toggleAmuletSelection(amulet: amulet)

@@ -11,7 +11,7 @@ struct RulesView: View {
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
         ZStack {
-            WV(url: URL(string: Links.ruleURL)!)
+            WV(initialURL: URL(string: Links.ruleURL)!)
             VStack {
                 ZStack {
 //                    HStack {

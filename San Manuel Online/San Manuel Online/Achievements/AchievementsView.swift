@@ -116,11 +116,11 @@ struct AchievementsView: View {
                         Image(.swipeBtn)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 40)
+                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 80:40)
                             
                     }
                     
-                    TextWithBorder(text: text, font: .custom(Fonts.mazzardM.rawValue, size: 24), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 2)
+                    TextWithBorder(text: text, font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 48:24), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 2)
                         .textCase(.uppercase)
                         .multilineTextAlignment(.center)
                     
@@ -132,7 +132,7 @@ struct AchievementsView: View {
                         Image(.swipeBtn)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 40)
+                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 80 : 40)
                             .rotationEffect(.degrees(180))
                     }
                 }
@@ -142,20 +142,22 @@ struct AchievementsView: View {
                         .resizable()
                         .foregroundColor(.black)
                         .scaledToFit()
-                        .padding(.bottom, 30)
+                        .padding(.bottom, DeviceInfo.shared.deviceType == .pad ? 0:30)
                     
                     VStack {
-                        TextWithBorder(text: header, font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                        TextWithBorder(text: header, font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                             .textCase(.uppercase)
                             .padding(16)
                             .multilineTextAlignment(.center)
-                            .offset(x: -150)
+                            .offset(x: DeviceInfo.shared.deviceType == .pad ? -280:-150)
                             
                         Spacer()
                     }
-                }.frame(height: 250)
+                }.frame(height: DeviceInfo.shared.deviceType == .pad ? 400:250)
                 
-                
+                if DeviceInfo.shared.deviceType == .pad  {
+                    Spacer()
+                }
             }
             
         }

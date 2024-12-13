@@ -29,7 +29,7 @@ struct TrainingView: View {
                                 Image(.cellBg)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: 65)
+                                    .frame(height: DeviceInfo.shared.deviceType == .pad ? 130:65)
                                     .onTapGesture {
                                         handleCellTap(at: index)
                                         print("tapped at:", index)
@@ -39,13 +39,13 @@ struct TrainingView: View {
                                     Image(amulet.imageName)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 55)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 110:55)
                                 }
                                 
                             }
                         }
                         
-                    }.frame(width: 350)
+                    }.frame(width: DeviceInfo.shared.deviceType == .pad ? 550:350)
                     
                     Spacer()
                     HStack {
@@ -55,8 +55,8 @@ struct TrainingView: View {
                                 Image(amulet.imageName)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: 90)
-                                    .padding(.bottom, -60)
+                                    .frame(height: DeviceInfo.shared.deviceType == .pad ? 160:90)
+                                    .padding(.bottom, DeviceInfo.shared.deviceType == .pad ? -90:-60)
                                     .offset(y: selectedAmulet == amulet ? -10 : 0) // Highlight selected amulet
                                     .onTapGesture {
                                         toggleAmuletSelection(amulet: amulet)

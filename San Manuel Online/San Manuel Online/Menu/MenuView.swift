@@ -41,15 +41,15 @@ struct MenuView: View {
                                     Image(.coinBg)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 55)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 110:55)
                                     HStack(spacing: 0) {
                                         
                                         Image(.coin)
                                             .resizable()
                                             .scaledToFit()
-                                            .frame(height: 40)
+                                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 80:40)
                                         
-                                        TextWithBorder(text: "\(user.coins) ", font: .custom(Fonts.mazzardM.rawValue, size: 25), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                        TextWithBorder(text: "\(user.coins) ", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 50:25), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                             .textCase(.uppercase)
                                         
                                         
@@ -67,25 +67,25 @@ struct MenuView: View {
                                 Button {
                                     showPlay = true
                                 } label: {
-                                    TextBg(height: 75, text: "Play", textSize: 35)
+                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 120:75, text: "Play", textSize: 35)
                                 }
                                 
                                 Button {
                                     showTraining = true
                                 } label: {
-                                    TextBg(height: 75, text: "Training", textSize: 35)
+                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 120:75, text: "Training", textSize: 35)
                                 }
                                 
                                 Button {
                                     showSettings = true
                                 } label: {
-                                    TextBg(height: 75, text: "Settings", textSize: 35)
+                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 120:75, text: "Settings", textSize: 35)
                                 }
                                 
                                 Button {
                                     showAchievements = true
                                 } label: {
-                                    TextBg(height: 75, text: "Achievements", textSize: 30)
+                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 120:75, text: "Achievements", textSize: 30)
                                 }
                                 
                                 Button {
@@ -93,7 +93,7 @@ struct MenuView: View {
                                 } label: {
                                     
                                     ZStack {
-                                        TextBg(height: 75, text: "Daily Bonus", textSize: 35)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 120:75, text: "Daily Bonus", textSize: 35)
                                         TextWithBorder(text: "\(timeRemaining)", font: .custom(Fonts.mazzardM.rawValue, size: 16), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 1)
                                             .offset(x: 95, y: -15)
                                         
@@ -103,7 +103,7 @@ struct MenuView: View {
                                 Button {
                                     showHowToPlay = true
                                 } label: {
-                                    TextBg(height: 75, text: "How to play", textSize: 35)
+                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 120:75, text: "How to play", textSize: 35)
                                 }
                                 
                             }
@@ -120,15 +120,15 @@ struct MenuView: View {
                                     Image(.coinBg)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 45)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 90:45)
                                     HStack(spacing: 0) {
                                         
                                         Image(.coin)
                                             .resizable()
                                             .scaledToFit()
-                                            .frame(height: 30)
+                                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 60:30)
                                         
-                                        TextWithBorder(text: "\(user.coins) ", font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                                        TextWithBorder(text: "\(user.coins) ", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                             .textCase(.uppercase)
                                         
                                         
@@ -148,7 +148,7 @@ struct MenuView: View {
                                     Button {
                                         showPlay = true
                                     } label: {
-                                        TextBg(height: 65, text: "Play", textSize: 32)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 130:65, text: "Play", textSize: DeviceInfo.shared.deviceType == .pad ? 60:32)
                                     }
                                 }
                                 HStack(spacing: 15) {
@@ -156,13 +156,13 @@ struct MenuView: View {
                                     Button {
                                         showTraining = true
                                     } label: {
-                                        TextBg(height: 65, text: "Training", textSize: 32)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 130:65, text: "Training", textSize: DeviceInfo.shared.deviceType == .pad ? 60:32)
                                     }
                                     
                                     Button {
                                         showSettings = true
                                     } label: {
-                                        TextBg(height: 65, text: "Settings", textSize: 32)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 130:65, text: "Settings", textSize: DeviceInfo.shared.deviceType == .pad ? 60:32)
                                     }
                                     Spacer()
                                 }
@@ -172,16 +172,16 @@ struct MenuView: View {
                                     Button {
                                         showAchievements = true
                                     } label: {
-                                        TextBg(height: 65, text: "Achievements", textSize: 25)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 130:65, text: "Achievements", textSize: DeviceInfo.shared.deviceType == .pad ? 50:25)
                                     }
                                     
                                     Button {
                                         showDailyBonus = true
                                     } label: {
                                         ZStack {
-                                            TextBg(height: 65, text: "Daily Bonus", textSize: 27)
-                                            TextWithBorder(text: "\(timeRemaining)", font: .custom(Fonts.mazzardM.rawValue, size: 16), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 1)
-                                                .offset(x: 75, y: -15)
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 130:65, text: "Daily Bonus", textSize: DeviceInfo.shared.deviceType == .pad ? 50:27)
+                                            TextWithBorder(text: "\(timeRemaining)", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 32:16), textColor: .mainBrown, borderColor: .mainYellow, borderWidth: 1)
+                                                .offset(x: DeviceInfo.shared.deviceType == .pad ? 150:75, y: DeviceInfo.shared.deviceType == .pad ? -30:-15)
                                             
                                         }
                                     }
@@ -192,7 +192,7 @@ struct MenuView: View {
                                     Button {
                                         showHowToPlay = true
                                     } label: {
-                                        TextBg(height: 65, text: "How to play", textSize: 27)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 130:65, text: "How to play", textSize: DeviceInfo.shared.deviceType == .pad ? 54:27)
                                     }
                                     Spacer()
                                 }

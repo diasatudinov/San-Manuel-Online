@@ -44,10 +44,10 @@ struct SettingsView: View {
                         Image(.settingsBg)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 80)
+                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 160:80)
                         
                         HStack(spacing: 16) {
-                            TextWithBorder(text: "SOUND", font: .custom(Fonts.mazzardM.rawValue, size: 30), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                            TextWithBorder(text: "SOUND", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 60:30), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                 .textCase(.uppercase)
                             Button {
                                 settings.soundEnabled.toggle()
@@ -56,12 +56,12 @@ struct SettingsView: View {
                                     Image(.on)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 30)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 60:30)
                                 } else {
                                     Image(.off)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 30)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 60:30)
                                 }
                             }
                             
@@ -73,9 +73,9 @@ struct SettingsView: View {
                         Image(.settingsBg)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 80)
+                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 160:80)
                         HStack(spacing: 16) {
-                            TextWithBorder(text: "MUSIC", font: .custom(Fonts.mazzardM.rawValue, size: 30), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                            TextWithBorder(text: "MUSIC", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 60:30), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                 .textCase(.uppercase)
                             Button {
                                 settings.musicEnabled.toggle()
@@ -84,12 +84,12 @@ struct SettingsView: View {
                                     Image(.on)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 30)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 60:30)
                                 } else {
                                     Image(.off)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: 30)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 60:30)
                                 }
                             }
                         }
