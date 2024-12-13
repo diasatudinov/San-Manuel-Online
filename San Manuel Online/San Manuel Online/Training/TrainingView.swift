@@ -107,22 +107,22 @@ struct TrainingView: View {
             } else {
                 VStack {
                     Spacer()
-                    TextWithBorder(text: "WIN!", font: .custom(Fonts.mazzardM.rawValue, size: 50), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                    TextWithBorder(text: "WIN!", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 100:50), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                         .textCase(.uppercase)
                     
                     ZStack {
                         Image(.coinBg)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 45)
+                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 90:45)
                         HStack(spacing: 0) {
                             
                             Image(.coin)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: 30)
+                                .frame(height: DeviceInfo.shared.deviceType == .pad ? 60:30)
                             
-                            TextWithBorder(text: "+1 ", font: .custom(Fonts.mazzardM.rawValue, size: 20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
+                            TextWithBorder(text: "+1 ", font: .custom(Fonts.mazzardM.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20), textColor: .mainYellow, borderColor: .mainBrown, borderWidth: 2)
                                 .textCase(.uppercase)
                         }
                     }.padding(.bottom)
@@ -130,19 +130,19 @@ struct TrainingView: View {
                     Button {
                         restart()
                     }label: {
-                        TextBg(height: 55, text: "NEXT", textSize: 22)
+                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 110:55, text: "NEXT", textSize: DeviceInfo.shared.deviceType == .pad ? 44:22)
                     }
                     
                     Button {
                         presentationMode.wrappedValue.dismiss()
                     }label: {
-                        TextBg(type: .black, height: 55, text: "HOME", textSize: 22)
+                        TextBg(type: .black, height: DeviceInfo.shared.deviceType == .pad ? 110:55, text: "HOME", textSize: DeviceInfo.shared.deviceType == .pad ? 44:22)
                     }
                     
                     Button {
                         restart()
                     }label: {
-                        TextBg(type: .black, height: 55, text: "RESTART", textSize: 22)
+                        TextBg(type: .black, height: DeviceInfo.shared.deviceType == .pad ? 110:55, text: "RESTART", textSize: DeviceInfo.shared.deviceType == .pad ? 44:22)
                     }
                     HStack {
                         Spacer()
