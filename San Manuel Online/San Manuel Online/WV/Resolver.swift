@@ -50,7 +50,6 @@ class Resolver: NSObject, URLSessionTaskDelegate {
 //                        if Links.shared.finalURL == nil && ((finalURL.host?.contains("google")) != true) {
 //                            Links.shared.finalURL = finalURL
 //                        }
-                        
                         continuation.resume(returning: finalURL.host?.contains("google") ?? true)
                     } else {
                        // Links.shared.finalURL = finalURL

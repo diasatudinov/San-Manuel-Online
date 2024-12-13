@@ -8,35 +8,45 @@
 import SwiftUI
 import WebKit
 
-
 struct WV: UIViewRepresentable {
-    let url: URL
+    let initialURL: URL
     var allowsBackForwardNavigationGestures: Bool = true
     
+    func makeCoordinator() -> Coordinator {
+        return Coordinator()
+    }
+
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         webView.allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures
-        webView.uiDelegate = context.coordinator
-        
         webView.customUserAgent = WKWebView().value(forKey: "userAgent") as? String
+        webView.navigationDelegate = context.coordinator
+        let request = URLRequest(url: initialURL)
+        webView.load(request)
         
         return webView
     }
-    
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        let request = URLRequest(url: url)
-        uiView.load(request)
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, WKUIDelegate {
-        var parent: WV
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
+
+    class Coordinator: NSObject, WKNavigationDelegate {
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            if let url = webView.url {
+                //print("Final Loaded URL: \(url)")
+                if Links.shared.finalURL == nil {
+                    Links.shared.finalURL = url
+                }
+               
+            }
+        }
         
-        init(_ parent: WV) {
-            self.parent = parent
+        // This method gets called whenever the web view starts loading a new request
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            if let url = navigationAction.request.url {
+               // print("Navigating to URL: \(url)")
+            }
+            decisionHandler(.allow)
         }
         
         func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
@@ -48,6 +58,47 @@ struct WV: UIViewRepresentable {
     }
 }
 
+//struct WV: UIViewRepresentable {
+//    let url: URL
+//    var allowsBackForwardNavigationGestures: Bool = true
+//    
+//    func makeUIView(context: Context) -> WKWebView {
+//        let webView = WKWebView()
+//        webView.allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures
+//        webView.uiDelegate = context.coordinator
+//        webView.customUserAgent = WKWebView().value(forKey: "userAgent") as? String
+//        
+//        return webView
+//    }
+//    
+//    func updateUIView(_ uiView: WKWebView, context: Context) {
+//        let request = URLRequest(url: url)
+//        uiView.load(request)
+//    }
+//    
+//    func makeCoordinator() -> Coordinator {
+//        Coordinator(self)
+//    }
+//    
+//    class Coordinator: NSObject, WKUIDelegate {
+//        var parent: WV
+//        
+//        init(_ parent: WV) {
+//            self.parent = parent
+//        }
+//        
+//        func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+//            if navigationAction.targetFrame == nil {
+//                webView.load(navigationAction.request)
+//            }
+//            return nil
+//        }
+//    }
+//}
+
+//webView.allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures
+//webView.uiDelegate = context.coordinator
+//webView.customUserAgent = WKWebView().value(forKey: "userAgent") as? String
 struct WVWrap: View {
     @State private var nAllow = true
     var urlString = ""
@@ -58,24 +109,25 @@ struct WVWrap: View {
             if firstOpen {
                 if let encodedString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                    let url = URL(string: encodedString) {
-                    WV(url: url)
+                    WV(initialURL: url)
                         .onAppear {
                             print("encodedString")
                             print("firstOpen", firstOpen)
-                            if Links.shared.finalURL == nil {
-                                Links.shared.finalURL = url
-                            }
                         }
                         .onDisappear {
-                            
+                            print("onDisappear")
+                            firstOpen = false
                             nAllow = true
+                        }
+                        .onChange(of: url) { new in
+                            print("LAST redirects: ",new)
                         }
                 }
             } else {
                 if let url = Links.shared.finalURL {
-                    WV(url: url)
+                    WV(initialURL: url)
                         .onAppear {
-                            print("Links.shared.finalURL")
+                            print("Links.shared.finalURL:", url)
                             print("firstOpen", firstOpen)
                         }
                 } else {
